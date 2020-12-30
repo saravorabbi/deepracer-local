@@ -4,7 +4,8 @@ from markov.architecture.embedder_factory import create_input_embedder, create_m
 from markov.environments.deepracer_racetrack_env import DeepRacerRacetrackEnvParameters
 from markov.multi_agent_coach.multi_agent_graph_manager import MultiAgentGraphManager
 
-from rl_coach.agents.clipped_ppo_agent import ClippedPPOAgentParameters
+from markov.clipped_ppo_agent import ClippedPPOAgentParameters
+#from rl_coach.agents.clipped_ppo_agent import ClippedPPOAgentParameters
 from rl_coach.base_parameters import VisualizationParameters, PresetValidationParameters, \
                                      DistributedCoachSynchronizationType
 from rl_coach.core_types import TrainingSteps, EnvironmentEpisodes, EnvironmentSteps
@@ -68,6 +69,7 @@ def get_graph_manager(hp_dict, agent_list, run_phase_subject, enable_domain_rand
     non_trainable_agents_list = list()
 
     for agent in agent_list:
+        #funzione che mi ritorna il grafo dalla libreria rl_coach
         agent_params = DeepRacerAgentParams()
         if agent.network_settings:
             agent_params.env_agent = agent
@@ -163,6 +165,8 @@ def get_graph_manager(hp_dict, agent_list, run_phase_subject, enable_domain_rand
     preset_validation_params.test = True
     preset_validation_params.min_reward_threshold = 400
     preset_validation_params.max_episodes_to_achieve_reward = 10000
+
+    print("sagemaker_graph_manager.py STO CHIAMANDO IL MULTI AGENT GRAPH MANAGER")
 
     graph_manager = MultiAgentGraphManager(agents_params=trainable_agents_list,
                                            env_params=env_params,

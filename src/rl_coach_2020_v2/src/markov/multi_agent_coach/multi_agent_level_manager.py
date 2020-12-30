@@ -47,6 +47,8 @@ class MultiAgentLevelManager(EnvironmentInterface):
         """
         super().__init__()
 
+        print("multi_agent_level_manager: INIT DEL MULTI GRAPH LEVEL MANAGER")
+
         if not isinstance(agents, dict):
             # insert the single composite agent to a dictionary for compatibility
             agents = {agents.name: agents}
@@ -163,6 +165,7 @@ class MultiAgentLevelManager(EnvironmentInterface):
         Make a training step for all the composite agents in this level manager
         :return: the loss?
         """
+        print("multi_agent_level_manager: FUNZIONE TRAIN - ALGORITMO PPO")
         # both to screen and to csv
         [agent.train() for agent in self.agents.values()]
 

@@ -96,6 +96,8 @@ def training_worker(graph_manager, task_parameters, user_batch_size,
                     steps += 1
 
                     graph_manager.phase = core_types.RunPhase.TRAIN
+
+                    #funzione in multi_agent_graph_manager.py
                     graph_manager.train()
                     graph_manager.phase = core_types.RunPhase.UNDEFINED
 
@@ -152,6 +154,8 @@ def training_worker(graph_manager, task_parameters, user_batch_size,
 
 def main():
     screen.set_use_colors(False)
+
+    logger.info("src/training_worker.py - INIZIO MAIN")
 
     parser = argparse.ArgumentParser()
     parser.add_argument('-pk', '--preset_s3_key',
@@ -235,6 +239,9 @@ def main():
         else:
             sm_hyperparams_dict = {}
 
+
+        #configurazione agente: metadati del modello impostati dall'utente (angolo di sterzo + velocità) + nome
+
         #! TODO each agent should have own config
         agent_config = {'model_metadata': model_metadata_local_path,
                         ConfigParams.CAR_CTRL_CONFIG.value: {ConfigParams.LINK_NAME_LIST.value: [],
@@ -249,9 +256,13 @@ def main():
         agent_list = list()
         agent_list.append(create_training_agent(agent_config))
 
+        logger.info("src/training_worker.py - ora chiamo la get_graph_manager, che recupera l'agente")
+
         graph_manager, robomaker_hyperparams_json = get_graph_manager(hp_dict=sm_hyperparams_dict,
                                                                       agent_list=agent_list,
                                                                       run_phase_subject=None)
+
+        logger.info("src/training_worker.py - ho l'agente")
 
         s3_client.upload_hyperparameters(robomaker_hyperparams_json)
         logger.info("Uploaded hyperparameters.json to S3")
@@ -313,6 +324,11 @@ def main():
     if use_pretrained_model:
         task_parameters.checkpoint_restore_path = args.pretrained_checkpoint_dir
     task_parameters.checkpoint_save_dir = args.checkpoint_dir
+
+    #funzione riga 48
+    #prende in input:
+    #       - il grafo (creato con la get_graph_manager)
+    #       - robomaker_hyperparams_json (ritornato dalla get_graph_manager)
 
     training_worker(
         graph_manager=graph_manager,

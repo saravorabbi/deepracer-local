@@ -130,6 +130,7 @@ class MultiAgentGraphManager(object):
 
     def _create_graph(self, task_parameters: TaskParameters) -> Tuple[List[MultiAgentLevelManager], List[Environment]]:
         # environment loading
+        print("_create_graph CICLO PER INIZIALIZZARE GLI AGENTI")
         self.env_params.seed = task_parameters.seed
         self.env_params.experiment_path = task_parameters.experiment_path
         env = short_dynamic_import(self.env_params.path)(**self.env_params.__dict__,
@@ -139,7 +140,13 @@ class MultiAgentGraphManager(object):
         agents = OrderedDict()
         for agent_params in self.agents_params:
             agent_params.task_parameters = copy.copy(task_parameters)
-            agent = short_dynamic_import(agent_params.path)(agent_params)
+            
+            #converte l'indirizzo in memoria della classe ClippedPPOAgent in clipped_ppo_agent.py in classe inizializzabile
+            ppo_class = short_dynamic_import(agent_params.path)
+            agent = ppo_class(agent_params)
+
+            #agent = short_dynamic_import(agent_params.path)(agent_params)
+            
             agents[agent_params.name] = agent
             screen.log_title("Created agent: {}".format(agent_params.name))
             if hasattr(self, 'memory_backend_params') and \
