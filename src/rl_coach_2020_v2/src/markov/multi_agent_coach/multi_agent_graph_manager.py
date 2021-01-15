@@ -203,8 +203,11 @@ class MultiAgentGraphManager(object):
         import tensorflow as tf
         config = tf.ConfigProto()
         config.allow_soft_placement = True  # allow placing ops on cpu if they are not fit for gpu
-        config.gpu_options.allow_growth = True  # allow the gpu memory allocated for the worker to grow if needed
-        # config.gpu_options.per_process_gpu_memory_fraction = 0.2
+        
+        #config.gpu_options.allow_growth = True  # allow the gpu memory allocated for the worker to grow if needed
+        config.gpu_options.per_process_gpu_memory_fraction = 0.8 #assign the gpu a percentage of the total memory(0.8 = 80%)
+        #this resolve the tensorfow's out of memory problem
+        
         config.intra_op_parallelism_threads = 1
         config.inter_op_parallelism_threads = 1
 
